@@ -1,3 +1,14 @@
+## 8Sep 
+- Created project with create react app 
+- Created form input and api call to github api
+
+## 9Sep
+- Used AntD Card and added sorting
+- added project to github
+- deployed to heroku
+- get username from url
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
