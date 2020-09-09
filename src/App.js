@@ -1,26 +1,135 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+// import GitForm from './components/GitForm';
+import { render } from '@testing-library/react';
+import { get } from 'axios'; 
+import { Layout, Input, Table, Card, Avatar, List} from 'antd';
+const { Header, Footer, Sider, Content } = Layout;
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+const columns = [
+  {
+    title: 'Login',
+    dataIndex: 'login',
+    key: 'login',
+  },
+  // {
+  //   title: 'Avatar',
+  //   dataIndex: 'avatar_url',
+  //   key: 'avatar_url',
+  //   render: imgSrc => <img src={ imgSrc } style={{height: '100px'}} />,
+  // },
+  {
+    title: 'Id',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
+    title: 'Name',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'Public Repos',
+    dataIndex: 'public_repos',
+    key: 'public_repos',
+    // sorter: {
+    //   compare: (a, b) => b.public_repos - a.public_repos ,
+    // },
+  },
+  {
+    title: 'Public Gists',
+    dataIndex: 'public_gists',
+    key: 'public_gists',
+  },
+  {
+    title: 'Followers',
+    dataIndex: 'followers',
+    key: 'followers',
+    // sorter: {
+    //   compare: (a, b) => b.followers - a.followers ,
+    // },
+  },
+  {
+    title: 'Following',
+    dataIndex: 'following',
+    key: 'following',
+  },
+];
+
+
+class App extends React.Component{
+  constructor(props) {
+    super(props);
+
+    this.state = {
+     
+      users: [],
+    };
+
+    this.onFormSubmit = this.onFormSubmit.bind(this);
+  }
+
+  onFormSubmit(gitid){
+    get(`https://api.github.com/users/${gitid}`)
+    .then(({ data }) => {
+      const { login, id, name } = data;
+  
+      this.setState({ users: [...this.state.users, data] });
+    });
+  }
+
+  render() {
+    return (<>
+      <Header>
+        {/*<div className="App">
+          <GitForm onSubmit={this.onFormSubmit} />
+          </div>*/}
+        <Input.Search
+          placeholder="git id"
+          onSearch={this.onFormSubmit}
+          size="large"
+          
+        />
+      </Header>
+      <Content>
+
+        {/*<Table dataSource={this.state.users} columns={columns} /> */}
+
+        <Card title="Git Users">{
+          this.state.users
+          .sort((u2, u1) => u1.public_repos - u2.public_repos)
+          .map(user => (
+            <Card.Grid style={{ width: 300, margin: 16 }}>
+              <Card.Meta
+                avatar={
+                  <Avatar src={user.avatar_url} />
+                }
+                title={user.login}
+                description={"Info"}
+              />
+              {
+                columns.map(column => (
+                  <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <div style={{fontWeight: 'bold'}}>{column.title}</div>
+                    <div>{user[column.key]}</div>
+                  </div>
+                ))
+              }
+
+          </Card.Grid>
+  
+        ))}</Card>
+
+      </Content>
+      <Footer>
+              <div style={{ textAlign: "center"}}>GIT PROFILE COMPARE</div>
+      </Footer>
+      </>
+    );
+  }
 }
+
 
 export default App;
