@@ -7,6 +7,7 @@
 - added project to github
 - deployed to heroku
 - get username from url
+- deploy to heroku
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
