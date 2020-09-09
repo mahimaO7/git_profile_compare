@@ -4,7 +4,7 @@ import './App.css';
 // import GitForm from './components/GitForm';
 import { render } from '@testing-library/react';
 import { get } from 'axios'; 
-import { Layout, Input, Table, Card, Avatar, List} from 'antd';
+import { Layout, Input, Table, Card, Avatar, List, Switch} from 'antd';
 const { Header, Footer, Sider, Content } = Layout;
 
 
@@ -64,7 +64,7 @@ class App extends React.Component{
     super(props);
 
     this.state = {
-     
+      sort: false,
       users: [],
     };
 
@@ -79,8 +79,15 @@ class App extends React.Component{
       this.setState({ users: [...this.state.users, data] });
     });
   }
+  onChange = checked => {
+    this.setState({ sort: checked });
+  };
 
   render() {
+    const users = this.state.sort ? 
+      [...this.state.users]
+        .sort((u2, u1) => u1.public_repos - u2.public_repos) 
+     : this.state.users;
     return (<>
       <Header>
         {/*<div className="App">
@@ -94,12 +101,12 @@ class App extends React.Component{
         />
       </Header>
       <Content>
+        <Switch checkedChildren="sorted" unCheckedChildren="unsorted"  checked={this.state.sort} onChange={this.onChange} />
 
         {/*<Table dataSource={this.state.users} columns={columns} /> */}
 
         <Card title="Git Users">{
-          this.state.users
-          .sort((u2, u1) => u1.public_repos - u2.public_repos)
+          users
           .map(user => (
             <Card.Grid style={{ width: 300, margin: 16 }}>
               <Card.Meta
