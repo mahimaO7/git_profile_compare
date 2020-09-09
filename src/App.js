@@ -71,6 +71,13 @@ class App extends React.Component{
     this.onFormSubmit = this.onFormSubmit.bind(this);
   }
 
+  componentDidMount() {
+    if (window.location.search) {
+      const usernames = window.location.search.split('=')[1];
+      if (usernames) usernames.split(',').map(this.onFormSubmit);
+    }
+  }
+
   onFormSubmit(gitid){
     get(`https://api.github.com/users/${gitid}`)
     .then(({ data }) => {
